@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './home.css'
+import { useNavigate, useLocation, useParams } from "react-router-dom";
+
 import Button from '../../components/funcComponents/ui/button/Button';
 import InputBox from '../../components/funcComponents/ui/inputBox/InputBox';
 import ModalNewDashboard from '../../components/funcComponents/ui/modalNewDashboard/ModalNewDashboard';
-import ButtonDash  from '../../components/funcComponents/ui/buttonDash/ButtonDash';
+import ButtonDash from '../../components/funcComponents/ui/buttonDash/ButtonDash';
 
 
 // REDUX
@@ -13,12 +15,15 @@ import { setToken } from '../../redux/ducks/tokenDuck'
 
 const Homehook = (props) => {
 
+    const navigate = useNavigate();
     const [state, setState] = useState(
         {
             openModal: false,
             dashboardList: [],
             error: false,
-            saveDashboard: false
+            saveDashboard: false,
+            title: null,
+            color: null,
 
         }
     )
@@ -26,7 +31,7 @@ const Homehook = (props) => {
 
     let title = props?.configDuck?.config.title;
     let color = props?.tokenDuck?.token.color;
-    let saveDashboard  = false
+    let saveDashboard = false
 
 
     const openCloseModal = (bool) => () => {
@@ -42,7 +47,8 @@ const Homehook = (props) => {
         let objDash = {
             dashboard: {
                 title,
-                color
+                color,
+                list: []
             }
         }
         if (title && color) {
@@ -57,7 +63,7 @@ const Homehook = (props) => {
             ...state,
             error,
             openModal,
-            saveDashboard
+            saveDashboard,
         })
     }
 
@@ -72,7 +78,7 @@ const Homehook = (props) => {
             values.push(localStorage.getItem(keys[i]));
         }
         let dashboardList = values.map((value) => JSON.parse(value));
-        saveDashboard  = false
+        saveDashboard = false
         console.log('dashboardList', dashboardList);
 
         setState({
@@ -83,6 +89,21 @@ const Homehook = (props) => {
 
     }
 
+
+    const openDash = (key) => () => {
+
+        navigate(
+            `/dashboard/${key.dashboard.title}`,
+            {
+                state: {
+                    title: key.dashboard.title,
+                    color: key.dashboard.color
+                }
+            });
+
+    }
+
+
     const mapLeaderBoard = (item) => {
         return (
 
@@ -90,10 +111,13 @@ const Homehook = (props) => {
                 <ButtonDash
                     backgroundColor={item.dashboard.color}
                     label={item.dashboard.title}
+                    onClickCallback={openDash(item)}
+
                 />
             </div>
         )
     }
+
 
     useEffect(() => {
         getAndAssignItems()
@@ -103,6 +127,8 @@ const Homehook = (props) => {
     }, [state.saveDashboard])
 
     return (
+
+
         <>
             Home
             <div>

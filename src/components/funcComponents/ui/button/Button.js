@@ -10,7 +10,7 @@ const Button = (props) => {
 
     return (
         <button
-            className={'button-default' + ' ' + props.className}
+            className={props.className + ' ' + 'button-default'}
             style={{
                 backgroundColor: props.backgroundColor
             }}

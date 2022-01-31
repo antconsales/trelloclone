@@ -14,7 +14,7 @@ function Routing() {
 
         <Routes>
           <Route path="/" index element={<Homehook />} />
-          <Route path="Dashboard" element={<Dashboardhook />} />
+          <Route path="dashboard/:id" element={<Dashboardhook />} />
         </Routes>
 
       </Provider>
