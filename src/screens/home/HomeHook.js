@@ -3,6 +3,7 @@ import './home.css'
 import Button from '../../components/funcComponents/ui/button/Button';
 import InputBox from '../../components/funcComponents/ui/inputBox/InputBox';
 import ModalNewDashboard from '../../components/funcComponents/ui/modalNewDashboard/ModalNewDashboard';
+import ButtonDash  from '../../components/funcComponents/ui/buttonDash/ButtonDash';
 
 
 // REDUX
@@ -16,7 +17,8 @@ const Homehook = (props) => {
         {
             openModal: false,
             dashboardList: [],
-            error: false
+            error: false,
+            saveDashboard: false
 
         }
     )
@@ -24,6 +26,7 @@ const Homehook = (props) => {
 
     let title = props?.configDuck?.config.title;
     let color = props?.tokenDuck?.token.color;
+    let saveDashboard  = false
 
 
     const openCloseModal = (bool) => () => {
@@ -45,6 +48,7 @@ const Homehook = (props) => {
         if (title && color) {
             localStorage.setItem(title, JSON.stringify(objDash))
             openModal = false
+            saveDashboard = true
         } else {
             error = true;
         }
@@ -53,6 +57,7 @@ const Homehook = (props) => {
             ...state,
             error,
             openModal,
+            saveDashboard
         })
     }
 
@@ -67,11 +72,13 @@ const Homehook = (props) => {
             values.push(localStorage.getItem(keys[i]));
         }
         let dashboardList = values.map((value) => JSON.parse(value));
+        saveDashboard  = false
         console.log('dashboardList', dashboardList);
 
         setState({
             ...state,
-            dashboardList: dashboardList
+            dashboardList: dashboardList,
+            saveDashboard,
         })
 
     }
@@ -80,7 +87,7 @@ const Homehook = (props) => {
         return (
 
             <div key={item.dashboard.title}>
-                <Button
+                <ButtonDash
                     backgroundColor={item.dashboard.color}
                     label={item.dashboard.title}
                 />
@@ -92,7 +99,8 @@ const Homehook = (props) => {
         getAndAssignItems()
         console.log(state.dashboardList);
 
-    }, [])
+
+    }, [state.saveDashboard])
 
     return (
         <>
