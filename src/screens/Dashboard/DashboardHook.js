@@ -114,6 +114,7 @@ const Dashboardhook = (props) => {
                     backgroundColor={'grey'}
                     label={item.listTitle}
                     keyStore={location.state.title}
+                    listTitle={item.listTitle}
                 />
             </div>
         )
@@ -132,42 +133,42 @@ const Dashboardhook = (props) => {
             Dashboard {location.state.title}
             <br />
 
-            <div>
+            <div className='list-container'>
                 {
                     state.listOfList.map(mapLeaderBoard)
 
                 }
+
+                {
+                    !state.openInputBox &&
+
+                    <Button
+                        className='button-new-list'
+                        label="Aggiungi un'altra lista"
+                        onClickCallback={openCloseInputBox(true)}
+                    />
+                }
+
+
+                {
+                    state.openInputBox &&
+
+                    <div>
+                        <InputBox
+                            placeholder='inserisci titolo alla tua lista'
+                            onChangeCallback={addTitleList}
+                        />
+                        <Button
+                            label='Aggiungi lista'
+                            onClickCallback={createNewList}
+                        />
+                        <Button
+                            label='X'
+                            onClickCallback={openCloseInputBox(false)}
+                        />
+                    </div>
+                }
             </div>
-
-            {
-                !state.openInputBox &&
-
-                <Button
-                    className='button-new-list'
-                    label="Aggiungi un'altra lista"
-                    onClickCallback={openCloseInputBox(true)}
-                />
-            }
-
-
-            {
-                state.openInputBox &&
-
-                <div>
-                    <InputBox
-                        placeholder='inserisci titolo alla tua lista'
-                        onChangeCallback={addTitleList}
-                    />
-                    <Button
-                        label='Aggiungi lista'
-                        onClickCallback={createNewList}
-                    />
-                    <Button
-                        label='X'
-                        onClickCallback={openCloseInputBox(false)}
-                    />
-                </div>
-            }
 
         </div>
     );
