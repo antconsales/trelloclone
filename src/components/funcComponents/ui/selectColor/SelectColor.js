@@ -40,7 +40,7 @@ const SelectColor = (props) => {
     return (
         <>
 
-            <h4>Seleziona il tuo Sfondo</h4>
+            <h4>{props.colorTitle}</h4>
             <div className='select-color-container'>
                 <Button
                     label=''

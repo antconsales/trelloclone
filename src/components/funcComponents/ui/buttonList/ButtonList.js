@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import './buttonList.css'
 
-import { useParams, useLocation } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types'
+
 import Button from '../button/Button';
 import InputBox from '../inputBox/InputBox';
+import ModalNewTask from '../modalNewTask/ModalNewTask';
 
 const ButtonList = (props) => {
 
     const location = useLocation()
+    const navigate = useNavigate();
 
     const [state, setState] = useState(
         {
@@ -19,8 +22,6 @@ const ButtonList = (props) => {
             saveTask: false,
             listOfTasks: [],
             getDashboard: JSON.parse(localStorage.getItem(location.state.title)),
-
-
         }
     )
 
@@ -111,14 +112,30 @@ const ButtonList = (props) => {
 
             <div key={key}>
                 <Button
-                    backgroundColor={'grey'}
+                    backgroundColor={'lightgrey'}
                     label={item}
+                    onClickCallback={openModelTaskDash(item)}
                 // keyStore={location.state.title}
                 />
             </div>
         )
     }
 
+
+    const openModelTaskDash = (key) => () => {
+
+        navigate(
+            `/dashboard/${location.state.title}`,
+            {
+                state: {
+                    title: location.state.title,
+                    modalTask: true,
+                    taskTitle: key,
+                    color: location.state.color
+                }
+            });
+
+    }
     useEffect(() => {
         getAndAssignItems()
         console.log('inizio');
@@ -130,7 +147,7 @@ const ButtonList = (props) => {
 
         <>
 
-            <h1>TITOLO LISTA  {props.listTitle}</h1>
+
             {
                 state.isDeleted === false &&
                 <>

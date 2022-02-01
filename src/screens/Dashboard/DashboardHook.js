@@ -4,6 +4,7 @@ import { useParams, useLocation } from 'react-router-dom';
 import Button from '../../components/funcComponents/ui/button/Button';
 import InputBox from '../../components/funcComponents/ui/inputBox/InputBox';
 import ButtonList from '../../components/funcComponents/ui/buttonList/ButtonList';
+import ModalNewTask from '../../components/funcComponents/ui/modalNewTask/ModalNewTask';
 
 const Dashboardhook = (props) => {
 
@@ -17,14 +18,15 @@ const Dashboardhook = (props) => {
             error: false,
             saveList: false,
             listTitle: null,
-            listOfList: []
+            listOfList: [],
+            modalIsClosed: false
 
 
         }
     )
     console.log('location', location)
     console.log('title', params)
-    console.log('color', location.state.color)
+    // console.log('color', location.state.color)
 
 
 
@@ -120,11 +122,24 @@ const Dashboardhook = (props) => {
         )
     }
 
+    const closeModalTask = () => {
+        location.state.modalTask = false
+        setState({
+            ...state,
+            modalIsClosed: false
+        })
+    }
+
 
     useEffect(() => {
         getAndAssignItems()
         // console.log(state.listOfList);
 
+
+        // setState({
+        //     ...state,
+        //     modalIsClosed: location.state.modalTask
+        // })
 
     }, [state.saveList])
 
@@ -169,6 +184,19 @@ const Dashboardhook = (props) => {
                     </div>
                 }
             </div>
+
+
+            {
+                location.state.modalTask &&
+                <div>
+                    <ModalNewTask
+                        taskTitle={location.state.taskTitle}
+                        className='modal-new-task'
+                    />
+                    <Button
+                        onClickCallback={closeModalTask} />
+                </div>
+            }
 
         </div>
     );

@@ -26,7 +26,9 @@ const ModalNewDashboard = (props) => {
     return (
         <div className={props.className}>
 
-            <SelectColor />
+            <SelectColor
+                colorTitle={'Seleziona il tuo Sfondo'}
+            />
 
             <h4>Inserisci Titolo</h4>
 
