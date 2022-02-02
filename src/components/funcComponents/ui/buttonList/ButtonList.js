@@ -7,11 +7,15 @@ import PropTypes from 'prop-types'
 import Button from '../button/Button';
 import InputBox from '../inputBox/InputBox';
 import ModalNewTask from '../modalNewTask/ModalNewTask';
+//  REDUX
+import { connect } from 'react-redux';
+import { setListTitle } from '../../../../redux/ducks/listTitleDuck ';
 
 const ButtonList = (props) => {
 
     const location = useLocation()
     const navigate = useNavigate();
+
 
     const [state, setState] = useState(
         {
@@ -22,11 +26,15 @@ const ButtonList = (props) => {
             saveTask: false,
             listOfTasks: [],
             getDashboard: JSON.parse(localStorage.getItem(location.state.title)),
+            positionList: null,
+            moveTask: false,
+            listOfTitleList: null,
         }
     )
 
     let positionList = state.getDashboard.dashboard.list.map(x => x.listTitle).indexOf(props.listTitle)
 
+    let listOfTitleList = state.getDashboard.dashboard.list.map(x => x.listTitle)
 
     const deteleList = (e) => {
         let isDeleted = true;
@@ -70,6 +78,9 @@ const ButtonList = (props) => {
         let saveTask = false
         let objTask = {
             taskTitle: state.taskTitle,
+            description: "",
+            comments: [],
+            label: "",
         }
         if (state.taskTitle) {
             k = state.getDashboard.dashboard.list.map(x => x.listTitle).indexOf(title)
@@ -104,25 +115,131 @@ const ButtonList = (props) => {
             ...state,
             listOfTasks,
             saveTask,
+            positionList: positionList,
+            moveTask: false,
+            listOfTitleList: listOfTitleList,
         })
 
     }
+    const moveUp = (name) => () => {
+        let listOfTasks = state.listOfTasks
+        let old_index = listOfTasks.indexOf(name)
+        let new_index = old_index - 1
+        console.log(listOfTasks);
+        while (old_index < 0) {
+            old_index += listOfTasks.length;
+        }
+        while (new_index < 0) {
+            new_index += listOfTasks.length;
+        }
+        if (new_index >= listOfTasks.length) {
+            var k = new_index - listOfTasks.length + 1;
+            while (k--) {
+                listOfTasks.push(undefined);
+            }
+        }
+        // listOfTasks.splice(new_index, 0, listOfTasks.splice(old_index, 1)[0]);
+
+        listOfTasks = state.getDashboard.dashboard.list[positionList].tasks.splice(new_index, 0, state.getDashboard.dashboard.list[positionList].tasks.splice(old_index, 1)[0])
+        localStorage.setItem(location.state.title, JSON.stringify(state.getDashboard))
+        console.log(listOfTasks);  // for testing
+        setState({
+            ...state,
+            listOfTasks,
+            moveTask: true
+        })
+
+    }
+
+
+    const moveDown = (name) => () => {
+        let listOfTasks = state.listOfTasks
+        let old_index = listOfTasks.indexOf(name)
+        let new_index = old_index + 1
+        console.log(listOfTasks);
+        while (old_index < 0) {
+            old_index += listOfTasks.length;
+        }
+        while (new_index < 0) {
+            new_index += listOfTasks.length;
+        }
+        if (new_index >= listOfTasks.length) {
+            var k = new_index - listOfTasks.length + 1;
+            while (k--) {
+                listOfTasks.push(undefined);
+            }
+        }
+        // listOfTasks.splice(new_index, 0, listOfTasks.splice(old_index, 1)[0]);
+
+        listOfTasks = state.getDashboard.dashboard.list[positionList].tasks.splice(new_index, 0, state.getDashboard.dashboard.list[positionList].tasks.splice(old_index, 1)[0])
+        localStorage.setItem(location.state.title, JSON.stringify(state.getDashboard))
+        console.log(listOfTasks);  // for testing
+        setState({
+            ...state,
+            listOfTasks,
+            moveTask: true
+        })
+
+    }
+
+
+
+
     const maptasks = (item, key) => {
         return (
 
             <div key={key}>
+                <Button
+                    label='UP'
+                    onClickCallback={moveUp(item)}
+                />
+                <Button
+                    label='DOWN'
+                    onClickCallback={moveDown(item)}
+                />
                 <Button
                     backgroundColor={'lightgrey'}
                     label={item}
                     onClickCallback={openModelTaskDash(item)}
                 // keyStore={location.state.title}
                 />
+
+
+                <select onChange={changeList(item)}>
+                    {
+                        state.listOfTitleList.map(mapList(item))
+                    }
+                </select>
+
             </div>
+        )
+    }
+    const changeList = (taskName) => (e) => {
+        let name = e.target.value
+        console.log('listName e TaskName', (name), (taskName));
+        setState({
+            ...state,
+            getDashboard: JSON.parse(localStorage.getItem(location.state.title)),
+            moveTask: true
+        })
+
+    }
+
+
+
+
+
+    const mapList = (taskName) => (listName) => {
+        return (
+
+            <option value={listName} key={listName}>{listName}</option>
+
         )
     }
 
 
     const openModelTaskDash = (key) => () => {
+
 
         navigate(
             `/dashboard/${location.state.title}`,
@@ -131,17 +248,24 @@ const ButtonList = (props) => {
                     title: location.state.title,
                     modalTask: true,
                     taskTitle: key,
-                    color: location.state.color
+                    color: location.state.color,
+                    positionList: positionList,
+                    listOfTasks: state.listOfTasks
                 }
             });
+        let obj = {
+            listTitle: state.positionList,
+        }
+        props.dispatch(setListTitle(obj))
 
     }
     useEffect(() => {
         getAndAssignItems()
-        console.log('inizio');
+        console.log('listOfTitleList', listOfTitleList);
 
 
-    }, [state.saveTask])
+
+    }, [state.saveTask, state.moveTask])
 
     return (
 
@@ -215,5 +339,9 @@ ButtonList.propTypes = {
     label: PropTypes.string.isRequired
 }
 
-export default ButtonList;
+const mapStateToProps = state => ({
+    listTitleDuck: state.listTitleDuck
+});
+
+export default connect(mapStateToProps)(ButtonList);
 

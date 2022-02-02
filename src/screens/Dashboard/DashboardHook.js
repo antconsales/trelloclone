@@ -19,12 +19,11 @@ const Dashboardhook = (props) => {
             saveList: false,
             listTitle: null,
             listOfList: [],
-            modalIsClosed: false
-
 
         }
     )
     console.log('location', location)
+    console.log('listTitle', location.state.listTitleNavigate)
     console.log('title', params)
     // console.log('color', location.state.color)
 
@@ -122,18 +121,20 @@ const Dashboardhook = (props) => {
         )
     }
 
+
+    //DA CONTROLLARE
     const closeModalTask = () => {
         location.state.modalTask = false
         setState({
             ...state,
-            modalIsClosed: false
+
         })
     }
 
 
     useEffect(() => {
         getAndAssignItems()
-        // console.log(state.listOfList);
+        console.log('positionList', location.state.positionList);
 
 
         // setState({
@@ -192,9 +193,13 @@ const Dashboardhook = (props) => {
                     <ModalNewTask
                         taskTitle={location.state.taskTitle}
                         className='modal-new-task'
+                        positionList={location.state.positionList}
+                        dashTitle={location.state.title}
+                        listOfTasks={location.state.listOfTasks}
                     />
                     <Button
-                        onClickCallback={closeModalTask} />
+                        onClickCallback={closeModalTask}
+                        label='X' />
                 </div>
             }
 
