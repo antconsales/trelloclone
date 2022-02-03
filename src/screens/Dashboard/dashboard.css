@@ -1,21 +1,29 @@
+.dashboard-name{
+    width: 200px;
+    background-color: rgba(255,255,255, 0.4);
+    border-radius: 5px;
+    padding: .5em;
+}
 .dashboard-container{
+    padding-left: 1em;
     width: 100vw;
     height: 100vh;
+    overflow: scroll;
     display: flex;
     flex-direction: column;
    
 }
 
 .button-new-list{
-    width: 450px !important;
-    background-color: aqua;
+    width: 100px !important;
+    justify-self: flex-start;
 }
 
 .list-container {
     display: flex;
     flex-direction: row;
-    border: 2px solid blue;
-    justify-content: space-evenly;
+    justify-content: flex-start;
+    gap: 1em;
     flex-wrap: nowrap
 }
 

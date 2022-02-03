@@ -23,11 +23,11 @@ const Dashboardhook = (props) => {
             saveList: false,
             listTitle: null,
             listOfList: [],
-            refreshList: false,
+            refreshList: props?.refreshListDuck.token.refreshList,
         }
     )
     console.log('refreshListDuck', props.refreshListDuck)
-  
+
 
 
 
@@ -81,7 +81,7 @@ const Dashboardhook = (props) => {
         var values = [],
             keys = Object.keys(localStorage),
             i = keys.length;
-      
+
 
         while (i--) {
             values.push(JSON.parse(localStorage.getItem(keys[i])));
@@ -90,14 +90,14 @@ const Dashboardhook = (props) => {
         // values = JSON.parse(values)
 
         // values = values.dashboard.list
-       
+
 
         let objDash = values.filter((value) => value.dashboard.title === location.state.title);
 
         let listOfList = objDash[0].dashboard.list.map((value) => value)
-       
+
         let saveList = false
-       
+
 
 
         setState({
@@ -155,15 +155,9 @@ const Dashboardhook = (props) => {
 
     return (
         <div style={{ backgroundColor: location.state.color }} className='dashboard-container'>
-            Dashboard {location.state.title}
-            
-            <br />
+            <h2 className='dashboard-name'> Dashboard {location.state.title} </h2>
 
             <div className='list-container'>
-                {
-                    state.listOfList.map(mapLeaderBoard)
-
-                }
 
                 {
                     !state.openInputBox &&
@@ -174,7 +168,10 @@ const Dashboardhook = (props) => {
                         onClickCallback={openCloseInputBox(true)}
                     />
                 }
-
+                
+                {
+                    state.listOfList.map(mapLeaderBoard)
+                }
 
                 {
                     state.openInputBox &&

@@ -1,16 +1,31 @@
+
 .home-name {
-    text-align: center;
+    margin-top: 0;
+    background-color: #90BEDE;
+    font-size: 25px;
+    padding: .2em 0 .5em .1em;
 }
-.dashboard-container{
+.home-container{
+    display: flex;
+    gap: 1em;
+    overflow: scroll;
+    min-height: 100vh;
+    padding-top: 1em;
+}
+.home-add-dash-button{
+    margin-left: 1em;
+    box-shadow: 2px 2px 15px 1px #4B4B4B;
+}
+.dashboard-button-container{
     display: flex;
     flex-direction: row;
     gap: 1em;
     height: auto;
 }
-.home-container{
-    margin-top: 0;
+.home-button-modal{
+    
     display: flex;
-    justify-content: center;
-    align-items: center;
     flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
 }

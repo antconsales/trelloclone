@@ -43,13 +43,13 @@ const ButtonDash = (props) => {
                         }}
                         onClick={onClick}
                     >
-
                         {props.label}
+                        <Button
+                            className="button-close-dash"
+                            label="X"
+                            onClickCallback={deteleItem} />
                     </div>
-                    <Button
-                        className="button-close"
-                        label="X"
-                        onClickCallback={deteleItem} />
+
                 </>
             }
         </>

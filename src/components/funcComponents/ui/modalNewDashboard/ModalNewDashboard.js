@@ -15,7 +15,7 @@ const ModalNewDashboard = (props) => {
 
     const inputTitleNewDash = (e) => {
         const title = e.target.value
-        console.log(title);
+        //console.log(title);
         let obj = {
             title
         }

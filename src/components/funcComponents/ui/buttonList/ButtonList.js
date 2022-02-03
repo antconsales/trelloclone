@@ -44,13 +44,13 @@ const ButtonList = (props) => {
         let isDeleted = true;
         let newObjDash = null;
         let objDash = JSON.parse(localStorage.getItem(props.keyStore))
-        
+
         let objDashList = objDash.dashboard.list
         let list = objDashList.filter((item) => item.listTitle !== props.label)
         let dashboard = objDash.dashboard
         newObjDash = { dashboard: { ...dashboard, list: list } }
         localStorage.removeItem(props.keyStore)
-       
+
         localStorage.setItem(props.keyStore, JSON.stringify(newObjDash))
         setState({
             ...state,
@@ -87,7 +87,7 @@ const ButtonList = (props) => {
         if (state.taskTitle) {
             k = state.getDashboard.dashboard.list.map(x => x.listTitle).indexOf(title)
             state.getDashboard.dashboard.list[k].tasks.push(objTask)
-            console.log(state.getDashboard);
+            //console.log(state.getDashboard);
             localStorage.setItem(location.state.title, JSON.stringify(state.getDashboard))
             openInputBox = false
             saveTask = true
@@ -104,14 +104,14 @@ const ButtonList = (props) => {
     }
 
     const getAndAssignItems = () => {
-       
+
         let getDashboard = JSON.parse(localStorage.getItem(location.state.title));
         positionList = getDashboard.dashboard.list.map(x => x.listTitle).indexOf(props.listTitle)
         let listOfTasks = getDashboard.dashboard.list[positionList].tasks.map(x => x.taskTitle)
-        
+
         let listOfTasks2 = getDashboard.dashboard.list.map(x => (x.tasks.map(y => y.taskTitle)))
-        console.log('listOfTasks2', listOfTasks2);
-        console.log('listOfTasks', listOfTasks);
+        //console.log('listOfTasks2', listOfTasks2);
+        //console.log('listOfTasks', listOfTasks);
         let saveTask = false
 
         listOfTitleList = getDashboard.dashboard.list.map(x => x.listTitle)
@@ -132,7 +132,7 @@ const ButtonList = (props) => {
         let listOfTasks = state.listOfTasks
         let old_index = listOfTasks.indexOf(name)
         let new_index = old_index - 1
-        console.log(listOfTasks);
+        //console.log(listOfTasks);
         while (old_index < 0) {
             old_index += listOfTasks.length;
         }
@@ -148,7 +148,7 @@ const ButtonList = (props) => {
         // listOfTasks.splice(new_index, 0, listOfTasks.splice(old_index, 1)[0]);
         listOfTasks = state.getDashboard.dashboard.list[positionList].tasks.splice(new_index, 0, state.getDashboard.dashboard.list[positionList].tasks.splice(old_index, 1)[0])
         localStorage.setItem(location.state.title, JSON.stringify(state.getDashboard))
-        console.log(listOfTasks);  // for testing
+        //console.log(listOfTasks);  // for testing
         setState({
             ...state,
             listOfTasks,
@@ -161,7 +161,7 @@ const ButtonList = (props) => {
         let listOfTasks = state.listOfTasks
         let old_index = listOfTasks.indexOf(name)
         let new_index = old_index + 1
-        console.log(listOfTasks);
+        //console.log(listOfTasks);
         while (old_index < 0) {
             old_index += listOfTasks.length;
         }
@@ -187,22 +187,27 @@ const ButtonList = (props) => {
 
     const maptasks = (item, key) => {
         return (
-            <div key={key}>
+            <div key={key} className='button-list-task'>
+                <div className='up-down-button-task'>
+                    <Button
+                        className="button-up"
+                        label='UP'
+                        onClickCallback={moveUp(item)}
+                    />
+                    <Button
+                        className="button-up"
+                        label='DOWN'
+                        onClickCallback={moveDown(item)}
+                    />
+                </div>
                 <Button
-                    label='UP'
-                    onClickCallback={moveUp(item)}
-                />
-                <Button
-                    label='DOWN'
-                    onClickCallback={moveDown(item)}
-                />
-                <Button
+                    className="task"
                     backgroundColor={'lightgrey'}
                     label={item}
                     onClickCallback={openModelTaskDash(item)}
                 // keyStore={location.state.title}
                 />
-                <select onChange={changeList(item)} onClick={refrheshlist}>
+                <select className="select-list-task" onChange={changeList(item)} onClick={refrheshlist} >
                     {
                         state.listOfTitleList.map(mapList(item))
                     }
@@ -212,7 +217,7 @@ const ButtonList = (props) => {
     }
 
     const refrheshlist = () => {
-        
+
         //props.dispatch(setRefreshList(false))
         setState({
             ...state,
@@ -246,7 +251,7 @@ const ButtonList = (props) => {
             getNewList
 
         })
-        
+
         props.dispatch(setRefreshList(true))
     }
 
@@ -289,7 +294,7 @@ const ButtonList = (props) => {
                 state.isDeleted === false &&
                 <>
                     <div
-                        className={'button-dash-default' + ' ' + props.className}
+                        className={'button-list-default' + ' ' + props.className}
                         style={{
                             backgroundColor: props.backgroundColor
                         }}
@@ -303,7 +308,7 @@ const ButtonList = (props) => {
                     <div>
                         {
                             (props?.refreshListDuck?.token.refreshList === false ||
-                            props?.refreshListDuck?.token.refreshList === undefined) &&
+                                props?.refreshListDuck?.token.refreshList === undefined) &&
                             state.listOfTasks.map(maptasks)
                         }
                         {
@@ -317,14 +322,14 @@ const ButtonList = (props) => {
 
                         <Button
                             className="button-add-task"
-                            label="+ aggiungi una scheda"
+                            label="+ add a new task"
                             onClickCallback={openCloseInputBox(true)} />
                     }
 
                     {
                         state.openInputBox &&
 
-                        <div>
+                        <div className='modal-new-task'>
                             <InputBox
                                 placeholder='inserisci titolo alla tua scheda'
                                 onChangeCallback={addTextTask}

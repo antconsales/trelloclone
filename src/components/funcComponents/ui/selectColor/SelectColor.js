@@ -12,7 +12,7 @@ import { setToken } from '../../../../redux/ducks/tokenDuck'
 const SelectColor = (props) => {
 
     const changeColor = (color) => () => {
-        console.log(color);
+        //console.log(color);
 
         let obj = {
             color: color,
@@ -30,7 +30,7 @@ const SelectColor = (props) => {
 
     const handleInput = (e) => {
         let colorCode = e.target.value;
-        console.log(colorCode);
+        //console.log(colorCode);
         let obj = {
             color: colorCode,
         }

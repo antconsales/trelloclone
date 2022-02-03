@@ -38,9 +38,9 @@ const ModalNewTask = (props) => {
         })
     }
     const print = () => {
-        console.log(state.inputColor);
-        console.log(state.inputTextarea);
-        console.log(state.inputInputbox);
+        //console.log(state.inputColor);
+        //console.log(state.inputTextarea);
+        //console.log(state.inputInputbox);
     }
 
     const saveColorLabel = () => {
@@ -128,7 +128,7 @@ const ModalNewTask = (props) => {
         let getDashboard = JSON.parse(localStorage.getItem(props.dashTitle))
         let k = getDashboard.dashboard.list[props.positionList].tasks.map(x => x.taskTitle).indexOf(props.taskTitle)
         let listOfComments = getDashboard.dashboard.list[props.positionList].tasks[k].comments.map(x => x.comment)
-        console.log('listOfComments', listOfComments);
+        //console.log('listOfComments', listOfComments);
 
         setState({
             ...state,
@@ -155,7 +155,6 @@ const ModalNewTask = (props) => {
     useEffect(() => {
         getAndAssignItems()
 
-        console.log('pippo');
 
         // setState({
         //     ...state,

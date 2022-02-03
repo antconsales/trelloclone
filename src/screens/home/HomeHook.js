@@ -105,7 +105,7 @@ const Homehook = (props) => {
     const mapLeaderBoard = (item) => {
         return (
 
-            <div key={item.dashboard.title}>
+            <div key={item.dashboard.title} className='button-dash'>
                 <ButtonDash
                     backgroundColor={item.dashboard.color}
                     label={item.dashboard.title}
@@ -127,42 +127,47 @@ const Homehook = (props) => {
 
 
         <>
-            <h1 className='home-name'>HOME</h1> 
-            <div className='dashboard-container'>
-                {
-                    state.dashboardList.map(mapLeaderBoard)
-                }
-            </div>
-
+            <h1 className='home-name'>Trello Clone</h1>
             <div className='home-container'>
 
-                <Button
-                    backgroundColor={'gray'}
-                    onClickCallback={openCloseModal(true)}
-                />
-                {
-                    state.openModal &&
-                    <div>
-                        <ModalNewDashboard
-                            className='new-dashboard-modal'
-                        />
+                <div className='home-button-modal'>
 
-                        <Button
-                            label='chiudi'
-                            onClickCallback={openCloseModal(false)}
-                        />
-                        <Button
-                            label='salva'
-                            onClickCallback={createDashboard}
-                        />
-                        {
-                            state.error &&
-                            <span>seleziona colore e dai un titolo</span>
-                        }
+                    <Button
+                        className="home-add-dash-button"
+                        backgroundColor={'gray'}
+                        onClickCallback={openCloseModal(true)}
+                        label='Add Dash'
+                    />
+                    {
+                        state.openModal &&
+                        <div>
+                            <ModalNewDashboard
+                                className='new-dashboard-modal'
+                            />
 
-                    </div>
-                }
+                            <Button
+                                label='chiudi'
+                                onClickCallback={openCloseModal(false)}
+                            />
+                            <Button
+                                label='salva'
+                                onClickCallback={createDashboard}
+                            />
+                            {
+                                state.error &&
+                                <span>seleziona colore e dai un titolo</span>
+                            }
 
+                        </div>
+                    }
+
+
+                </div>
+                <div className='dashboard-button-container'>
+                    {
+                        state.dashboardList.map(mapLeaderBoard)
+                    }
+                </div>
 
             </div>
         </>
