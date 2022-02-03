@@ -5,10 +5,13 @@ import { combineReducers } from 'redux'
 //DUCK
 import configDuck from '../ducks/configDuck'
 import tokenDuck from '../ducks/tokenDuck'
+import refreshListDuck from '../ducks/refreshListDuck';
+
 
 const rootReducer = combineReducers({
     configDuck,
-    tokenDuck
+    tokenDuck,
+    refreshListDuck
 });
 
 export default rootReducer

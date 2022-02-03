@@ -10,6 +10,7 @@ import ModalNewTask from '../modalNewTask/ModalNewTask';
 //  REDUX
 import { connect } from 'react-redux';
 import { setListTitle } from '../../../../redux/ducks/listTitleDuck ';
+import { setRefreshList } from '../../../../redux/ducks/refreshListDuck';
 
 const ButtonList = (props) => {
 
@@ -29,11 +30,13 @@ const ButtonList = (props) => {
             positionList: null,
             moveTask: false,
             listOfTitleList: null,
+            listOpened: false,
+            newListOfTasks: null,
         }
     )
 
-    let positionList = state.getDashboard.dashboard.list.map(x => x.listTitle).indexOf(props.listTitle)
 
+    let positionList = state.getDashboard.dashboard.list.map(x => x.listTitle).indexOf(props.listTitle)
     let listOfTitleList = state.getDashboard.dashboard.list.map(x => x.listTitle)
 
     const deteleList = (e) => {
@@ -52,7 +55,6 @@ const ButtonList = (props) => {
             ...state,
             isDeleted
         })
-
     }
 
     const openCloseInputBox = (val) => () => {
@@ -60,7 +62,6 @@ const ButtonList = (props) => {
             ...state,
             openInputBox: val
         })
-
     }
 
     const addTextTask = (e) => {
@@ -92,7 +93,6 @@ const ButtonList = (props) => {
         } else {
             error = true;
         }
-
         setState({
             ...state,
             error,
@@ -102,15 +102,17 @@ const ButtonList = (props) => {
         })
     }
 
-
-
     const getAndAssignItems = () => {
-        console.log('posistio', positionList);
-        let listOfTasks = state.getDashboard.dashboard.list[positionList].tasks.map(x => x.taskTitle)
+        console.log('refreshListDuckButton', props?.refreshListDuck?.token.refreshList)
+        let getDashboard = JSON.parse(localStorage.getItem(location.state.title));
+        positionList = getDashboard.dashboard.list.map(x => x.listTitle).indexOf(props.listTitle)
+        let listOfTasks = getDashboard.dashboard.list[positionList].tasks.map(x => x.taskTitle)
+        let listOfTasks2 = getDashboard.dashboard.list.map(x => (x.tasks.map(y => y.taskTitle)))
+        console.log('listOfTasks2', listOfTasks2);
         console.log('listOfTasks', listOfTasks);
         let saveTask = false
 
-
+        listOfTitleList = getDashboard.dashboard.list.map(x => x.listTitle)
         setState({
             ...state,
             listOfTasks,
@@ -118,9 +120,11 @@ const ButtonList = (props) => {
             positionList: positionList,
             moveTask: false,
             listOfTitleList: listOfTitleList,
+            listOpened: false,
+            getDashboard
         })
-
     }
+
     const moveUp = (name) => () => {
         let listOfTasks = state.listOfTasks
         let old_index = listOfTasks.indexOf(name)
@@ -139,7 +143,6 @@ const ButtonList = (props) => {
             }
         }
         // listOfTasks.splice(new_index, 0, listOfTasks.splice(old_index, 1)[0]);
-
         listOfTasks = state.getDashboard.dashboard.list[positionList].tasks.splice(new_index, 0, state.getDashboard.dashboard.list[positionList].tasks.splice(old_index, 1)[0])
         localStorage.setItem(location.state.title, JSON.stringify(state.getDashboard))
         console.log(listOfTasks);  // for testing
@@ -148,7 +151,6 @@ const ButtonList = (props) => {
             listOfTasks,
             moveTask: true
         })
-
     }
 
 
@@ -170,7 +172,6 @@ const ButtonList = (props) => {
             }
         }
         // listOfTasks.splice(new_index, 0, listOfTasks.splice(old_index, 1)[0]);
-
         listOfTasks = state.getDashboard.dashboard.list[positionList].tasks.splice(new_index, 0, state.getDashboard.dashboard.list[positionList].tasks.splice(old_index, 1)[0])
         localStorage.setItem(location.state.title, JSON.stringify(state.getDashboard))
         console.log(listOfTasks);  // for testing
@@ -179,15 +180,10 @@ const ButtonList = (props) => {
             listOfTasks,
             moveTask: true
         })
-
     }
-
-
-
 
     const maptasks = (item, key) => {
         return (
-
             <div key={key}>
                 <Button
                     label='UP'
@@ -203,44 +199,58 @@ const ButtonList = (props) => {
                     onClickCallback={openModelTaskDash(item)}
                 // keyStore={location.state.title}
                 />
-
-
-                <select onChange={changeList(item)}>
+                <select onChange={changeList(item)} onClick={refrheshlist}>
                     {
                         state.listOfTitleList.map(mapList(item))
                     }
                 </select>
-
             </div>
         )
     }
-    const changeList = (taskName) => (e) => {
-        let name = e.target.value
-        console.log('listName e TaskName', (name), (taskName));
+
+    const refrheshlist = () => {
         setState({
             ...state,
-            getDashboard: JSON.parse(localStorage.getItem(location.state.title)),
-            moveTask: true
+            listOpened: true,
         })
-
     }
 
+    const changeList = (taskName) => (e) => {
 
+        let name = e.target.value
+        let getOldList = state.getDashboard.dashboard.list.map(x => x.listTitle).indexOf(props.listTitle)
+        let indexOfTask = state.getDashboard.dashboard.list[getOldList].tasks.map(y => y.taskTitle).indexOf(taskName)
+        let getTask = state.getDashboard.dashboard.list[getOldList].tasks.splice(indexOfTask, 1)
+        console.log('getTask', getTask);
+        let getNewList = state.getDashboard.dashboard.list.map(x => x.listTitle).indexOf(name)
+        let getObjTask = getTask[0]
+        state.getDashboard.dashboard.list[getNewList].tasks.push(getObjTask)
+        localStorage.setItem(location.state.title, JSON.stringify(state.getDashboard))
+        let getDashboard = JSON.parse(localStorage.getItem(location.state.title));
+        let listOfTasks = getDashboard.dashboard.list[getNewList].tasks.map(x => x.taskTitle)
+        console.log('listOfTasks', listOfTasks)
 
+        setState({
+            ...state,
+            moveTask: true,
+            listOfTasks,
+            getDashboard
 
+        })
+        let obj = {
+            refreshList: true,
+        }
+        props.dispatch(setRefreshList(obj))
+    }
 
     const mapList = (taskName) => (listName) => {
         return (
-
             <option value={listName} key={listName}>{listName}</option>
-
         )
     }
 
 
     const openModelTaskDash = (key) => () => {
-
-
         navigate(
             `/dashboard/${location.state.title}`,
             {
@@ -257,21 +267,15 @@ const ButtonList = (props) => {
             listTitle: state.positionList,
         }
         props.dispatch(setListTitle(obj))
-
     }
+
     useEffect(() => {
         getAndAssignItems()
-        console.log('listOfTitleList', listOfTitleList);
-
-
-
-    }, [state.saveTask, state.moveTask])
+    }, [state.saveTask, state.moveTask, state.listOpened])
 
     return (
 
         <>
-
-
             {
                 state.isDeleted === false &&
                 <>
@@ -294,8 +298,6 @@ const ButtonList = (props) => {
                         }
                     </div>
 
-
-
                     {
                         !state.openInputBox &&
 
@@ -304,7 +306,6 @@ const ButtonList = (props) => {
                             label="+ aggiungi una scheda"
                             onClickCallback={openCloseInputBox(true)} />
                     }
-
 
                     {
                         state.openInputBox &&

@@ -6,6 +6,10 @@ import InputBox from '../../components/funcComponents/ui/inputBox/InputBox';
 import ButtonList from '../../components/funcComponents/ui/buttonList/ButtonList';
 import ModalNewTask from '../../components/funcComponents/ui/modalNewTask/ModalNewTask';
 
+//REDUX
+import { connect } from 'react-redux';
+import { setRefreshList } from '../../redux/ducks/refreshListDuck';
+
 const Dashboardhook = (props) => {
 
 
@@ -19,12 +23,11 @@ const Dashboardhook = (props) => {
             saveList: false,
             listTitle: null,
             listOfList: [],
+            refreshList: props?.refreshListDuck?.token.refreshList
 
         }
     )
-    console.log('location', location)
-    console.log('listTitle', location.state.listTitleNavigate)
-    console.log('title', params)
+    console.log('refreshListDuck', props.refreshListDuck)
     // console.log('color', location.state.color)
 
 
@@ -76,11 +79,11 @@ const Dashboardhook = (props) => {
     }
 
     const getAndAssignItems = () => {
-
+        console.log('refreshList???????', state.refreshList);
         var values = [],
             keys = Object.keys(localStorage),
             i = keys.length;
-        console.log('keys', keys);
+        console.log('keys ciao mi sono attivato', keys);
 
         while (i--) {
             values.push(JSON.parse(localStorage.getItem(keys[i])));
@@ -96,12 +99,17 @@ const Dashboardhook = (props) => {
         let listOfList = objDash[0].dashboard.list.map((value) => value)
         console.log('listOfList', listOfList);
         let saveList = false
+        // let obj = {
+        //     refreshList: false,
+        // }
+        // props.dispatch(setRefreshList(obj))
 
 
         setState({
             ...state,
             listOfList: listOfList,
             saveList,
+            // refreshList: obj.refreshList
         })
 
     }
@@ -116,6 +124,7 @@ const Dashboardhook = (props) => {
                     label={item.listTitle}
                     keyStore={location.state.title}
                     listTitle={item.listTitle}
+                    refreshList={state.refreshList}
                 />
             </div>
         )
@@ -134,19 +143,26 @@ const Dashboardhook = (props) => {
 
     useEffect(() => {
         getAndAssignItems()
-        console.log('positionList', location.state.positionList);
+        console.log('start props', props.refreshListDuck);
+        // let obj = {
+        //     refreshList: state.refreshList,
+        // }
+        // props.dispatch(setRefreshList(obj))
 
 
         // setState({
         //     ...state,
-        //     modalIsClosed: location.state.modalTask
+        //     refreshList: false
         // })
 
-    }, [state.saveList])
+    }, [state.saveList, props?.refreshListDuck?.token.refreshList])
 
     return (
         <div style={{ backgroundColor: location.state.color }} className='dashboard-container'>
             Dashboard {location.state.title}
+            {
+                props?.refreshListDuck?.token.refreshList
+            }
             <br />
 
             <div className='list-container'>
@@ -207,4 +223,8 @@ const Dashboardhook = (props) => {
     );
 }
 
-export default Dashboardhook;
+const mapStateToProps = state => ({
+    refreshListDuck: state.refreshListDuck
+});
+
+export default connect(mapStateToProps)(Dashboardhook);
