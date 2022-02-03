@@ -32,6 +32,7 @@ const ButtonList = (props) => {
             listOfTitleList: null,
             listOpened: false,
             newListOfTasks: null,
+            getNewList: null,
         }
     )
 
@@ -43,13 +44,13 @@ const ButtonList = (props) => {
         let isDeleted = true;
         let newObjDash = null;
         let objDash = JSON.parse(localStorage.getItem(props.keyStore))
-        console.log('objDash', objDash);
+        
         let objDashList = objDash.dashboard.list
         let list = objDashList.filter((item) => item.listTitle !== props.label)
         let dashboard = objDash.dashboard
         newObjDash = { dashboard: { ...dashboard, list: list } }
         localStorage.removeItem(props.keyStore)
-        console.log('newObjDash', newObjDash);
+       
         localStorage.setItem(props.keyStore, JSON.stringify(newObjDash))
         setState({
             ...state,
@@ -103,10 +104,11 @@ const ButtonList = (props) => {
     }
 
     const getAndAssignItems = () => {
-        console.log('refreshListDuckButton', props?.refreshListDuck?.token.refreshList)
+       
         let getDashboard = JSON.parse(localStorage.getItem(location.state.title));
         positionList = getDashboard.dashboard.list.map(x => x.listTitle).indexOf(props.listTitle)
         let listOfTasks = getDashboard.dashboard.list[positionList].tasks.map(x => x.taskTitle)
+        
         let listOfTasks2 = getDashboard.dashboard.list.map(x => (x.tasks.map(y => y.taskTitle)))
         console.log('listOfTasks2', listOfTasks2);
         console.log('listOfTasks', listOfTasks);
@@ -123,6 +125,7 @@ const ButtonList = (props) => {
             listOpened: false,
             getDashboard
         })
+        props.dispatch(setRefreshList(false))
     }
 
     const moveUp = (name) => () => {
@@ -209,6 +212,8 @@ const ButtonList = (props) => {
     }
 
     const refrheshlist = () => {
+        
+        //props.dispatch(setRefreshList(false))
         setState({
             ...state,
             listOpened: true,
@@ -221,26 +226,28 @@ const ButtonList = (props) => {
         let getOldList = state.getDashboard.dashboard.list.map(x => x.listTitle).indexOf(props.listTitle)
         let indexOfTask = state.getDashboard.dashboard.list[getOldList].tasks.map(y => y.taskTitle).indexOf(taskName)
         let getTask = state.getDashboard.dashboard.list[getOldList].tasks.splice(indexOfTask, 1)
-        console.log('getTask', getTask);
         let getNewList = state.getDashboard.dashboard.list.map(x => x.listTitle).indexOf(name)
         let getObjTask = getTask[0]
-        state.getDashboard.dashboard.list[getNewList].tasks.push(getObjTask)
+        state.getDashboard.dashboard.list[getNewList].tasks.unshift(getObjTask)
         localStorage.setItem(location.state.title, JSON.stringify(state.getDashboard))
         let getDashboard = JSON.parse(localStorage.getItem(location.state.title));
-        let listOfTasks = getDashboard.dashboard.list[getNewList].tasks.map(x => x.taskTitle)
-        console.log('listOfTasks', listOfTasks)
+        let listOfTasksTwo = getDashboard.dashboard.list[getNewList].tasks.map(x => x.taskTitle)
+        listOfTasksTwo.map(maptasks)
+
+        console.log('Dashboard change list', getDashboard)
+
+        console.log('listOfTasksChangeList', listOfTasksTwo)
 
         setState({
             ...state,
             moveTask: true,
-            listOfTasks,
-            getDashboard
+            listOfTasks: listOfTasksTwo,
+            getDashboard,
+            getNewList
 
         })
-        let obj = {
-            refreshList: true,
-        }
-        props.dispatch(setRefreshList(obj))
+        
+        props.dispatch(setRefreshList(true))
     }
 
     const mapList = (taskName) => (listName) => {
@@ -271,6 +278,8 @@ const ButtonList = (props) => {
 
     useEffect(() => {
         getAndAssignItems()
+
+
     }, [state.saveTask, state.moveTask, state.listOpened])
 
     return (
@@ -293,8 +302,13 @@ const ButtonList = (props) => {
                     </div>
                     <div>
                         {
+                            (props?.refreshListDuck?.token.refreshList === false ||
+                            props?.refreshListDuck?.token.refreshList === undefined) &&
                             state.listOfTasks.map(maptasks)
-
+                        }
+                        {
+                            props?.refreshListDuck?.token.refreshList === true &&
+                            state.listOfTasks.map(maptasks)
                         }
                     </div>
 

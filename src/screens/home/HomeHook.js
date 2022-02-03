@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import './home.css'
-import { useNavigate, useLocation, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import Button from '../../components/funcComponents/ui/button/Button';
-import InputBox from '../../components/funcComponents/ui/inputBox/InputBox';
 import ModalNewDashboard from '../../components/funcComponents/ui/modalNewDashboard/ModalNewDashboard';
 import ButtonDash from '../../components/funcComponents/ui/buttonDash/ButtonDash';
 
 
 // REDUX
 import { connect } from 'react-redux';
-import { setConfig } from '../../redux/ducks/configDuck';
-import { setToken } from '../../redux/ducks/tokenDuck'
+
 
 const Homehook = (props) => {
 
@@ -72,14 +70,14 @@ const Homehook = (props) => {
         var values = [],
             keys = Object.keys(localStorage),
             i = keys.length;
-        console.log('keys', keys);
+
 
         while (i--) {
             values.push(localStorage.getItem(keys[i]));
         }
         let dashboardList = values.map((value) => JSON.parse(value));
         saveDashboard = false
-        console.log('dashboardList', dashboardList);
+
 
         setState({
             ...state,
@@ -121,7 +119,6 @@ const Homehook = (props) => {
 
     useEffect(() => {
         getAndAssignItems()
-        console.log(state.dashboardList);
 
 
     }, [state.saveDashboard])
@@ -130,25 +127,14 @@ const Homehook = (props) => {
 
 
         <>
-            Home
-            <div>
+            <h1 className='home-name'>HOME</h1> 
+            <div className='dashboard-container'>
                 {
                     state.dashboardList.map(mapLeaderBoard)
-
                 }
             </div>
 
             <div className='home-container'>
-                <p>
-                    {
-                        props?.tokenDuck?.token.color
-                    }
-                </p>
-                <p>
-                    {
-                        props?.configDuck?.config.title
-                    }
-                </p>
 
                 <Button
                     backgroundColor={'gray'}
@@ -187,7 +173,8 @@ const Homehook = (props) => {
 
 const mapStateToProps = state => ({
     tokenDuck: state.tokenDuck,
-    configDuck: state.configDuck
+    configDuck: state.configDuck,
+    refreshListDuck: state.refreshListDuck
 });
 
 export default connect(mapStateToProps)(Homehook);

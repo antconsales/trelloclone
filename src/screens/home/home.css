@@ -1,5 +1,14 @@
-
+.home-name {
+    text-align: center;
+}
+.dashboard-container{
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+    height: auto;
+}
 .home-container{
+    margin-top: 0;
     display: flex;
     justify-content: center;
     align-items: center;

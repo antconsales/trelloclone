@@ -23,13 +23,11 @@ const Dashboardhook = (props) => {
             saveList: false,
             listTitle: null,
             listOfList: [],
-            refreshList: props?.refreshListDuck?.token.refreshList
-
+            refreshList: false,
         }
     )
     console.log('refreshListDuck', props.refreshListDuck)
-    // console.log('color', location.state.color)
-
+  
 
 
 
@@ -79,11 +77,11 @@ const Dashboardhook = (props) => {
     }
 
     const getAndAssignItems = () => {
-        console.log('refreshList???????', state.refreshList);
+
         var values = [],
             keys = Object.keys(localStorage),
             i = keys.length;
-        console.log('keys ciao mi sono attivato', keys);
+      
 
         while (i--) {
             values.push(JSON.parse(localStorage.getItem(keys[i])));
@@ -92,24 +90,21 @@ const Dashboardhook = (props) => {
         // values = JSON.parse(values)
 
         // values = values.dashboard.list
-        console.log('values', values);
+       
 
         let objDash = values.filter((value) => value.dashboard.title === location.state.title);
 
         let listOfList = objDash[0].dashboard.list.map((value) => value)
-        console.log('listOfList', listOfList);
+       
         let saveList = false
-        // let obj = {
-        //     refreshList: false,
-        // }
-        // props.dispatch(setRefreshList(obj))
+       
 
 
         setState({
             ...state,
             listOfList: listOfList,
             saveList,
-            // refreshList: obj.refreshList
+            refreshList: props?.refreshListDuck.token.refreshList
         })
 
     }
@@ -144,6 +139,7 @@ const Dashboardhook = (props) => {
     useEffect(() => {
         getAndAssignItems()
         console.log('start props', props.refreshListDuck);
+        console.log('refresh list dashboard', state.refreshList)
         // let obj = {
         //     refreshList: state.refreshList,
         // }
@@ -155,14 +151,12 @@ const Dashboardhook = (props) => {
         //     refreshList: false
         // })
 
-    }, [state.saveList, props?.refreshListDuck?.token.refreshList])
+    }, [state.saveList, props?.refreshListDuck.token.refreshList, state.refreshList])
 
     return (
         <div style={{ backgroundColor: location.state.color }} className='dashboard-container'>
             Dashboard {location.state.title}
-            {
-                props?.refreshListDuck?.token.refreshList
-            }
+            
             <br />
 
             <div className='list-container'>
