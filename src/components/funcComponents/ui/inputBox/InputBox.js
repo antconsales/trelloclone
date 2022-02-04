@@ -13,6 +13,7 @@ const InputBox = (props) => {
             placeholder={props.placeholder}
             onChange={onChange}
             className={props.className}
+            value={props.value}
         >
 
         </input>

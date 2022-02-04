@@ -15,15 +15,17 @@ const ModalNewTask = (props) => {
 
     const [state, setState] = useState(
         {
-            inputColor: null,
-            inputTextarea: null,
-            inputInputbox: null,
-            // getDashboard: JSON.parse(localStorage.getItem(props.dashTitle)),
+            inputColor: "",
+            inputTextarea: "",
+            inputInputbox: "",
+            getDashboard: JSON.parse(localStorage.getItem(props.dashTitle)),
             taskTitle: null,
             positionList: null,
             listOfTasks: null,
             listOfComments: [],
             saveComment: false,
+            description: null,
+            color: null
         }
     )
 
@@ -60,20 +62,24 @@ const ModalNewTask = (props) => {
             error = true;
         }
 
-        // setState({
-        //     ...state,
-        //     error,
-        //     openInputBox,
-        //     saveDescription,
-        //     positionList: k
-        // })
+        setState({
+            ...state,
+            error,
+            color: state.inputColor
+        })
+    }
+    const updateColor = () => {
+        setState({
+            ...state,
+            color: null
+        })
     }
 
     const saveDescription = () => {
         let getDashboard = JSON.parse(localStorage.getItem(props.dashTitle))
         let error = false;
         let k = null;
-        let saveDescription = false
+        let saveComment = state.saveComment
         let strDescription = state.inputTextarea
 
         if (state.inputTextarea) {
@@ -81,21 +87,36 @@ const ModalNewTask = (props) => {
             getDashboard.dashboard.list[props.positionList].tasks[k].description = strDescription
             localStorage.setItem(props.dashTitle, JSON.stringify(getDashboard))
             // openInputBox = false
-            // saveDescription = true
-        } else {
+            saveComment = true
+
+        } else if (!state.inputTextarea && !state.description) {
+            k = getDashboard.dashboard.list[props.positionList].tasks.map(x => x.taskTitle).indexOf(props.taskTitle)
+            getDashboard.dashboard.list[props.positionList].tasks[k].description = strDescription
+            localStorage.setItem(props.dashTitle, JSON.stringify(getDashboard))
+            // openInputBox = false
+            saveComment = true
+        }
+        else {
             error = true;
         }
 
-        // setState({
-        //     ...state,
-        //     error,
-        //     openInputBox,
-        //     saveDescription,
-        //     positionList: k
-        // })
+        setState({
+            ...state,
+            error,
+            description: strDescription,
+            // inputTextarea,
+            // openInputBox,
+            saveComment,
+            // positionList: k
+        })
     }
 
-
+    const updateDescription = () => {
+        setState({
+            ...state,
+            description: null,
+        })
+    }
     const saveComments = () => {
         let getDashboard = JSON.parse(localStorage.getItem(props.dashTitle))
         let error = false;
@@ -118,35 +139,78 @@ const ModalNewTask = (props) => {
 
         setState({
             ...state,
-            saveComment
+            saveComment,
+            inputInputbox: ""
         })
     }
+    const deleteComment = (nameComment) => () => {
+        console.log(nameComment);
+        let newObjComment = null;
+        let getDashboard = JSON.parse(localStorage.getItem(props.dashTitle))
+        // console.log("objComment", objComment);
 
+        let k = getDashboard.dashboard.list[props.positionList].tasks.map(x => x.taskTitle).indexOf(props.taskTitle)
+        // let comments = getDashboard.dashboard.list[props.positionList].tasks[k].comments
+        let commentsList = getDashboard.dashboard.list[props.positionList].tasks[k].comments.filter((item) => item.comment !== nameComment)
+        // let commentIndex = commentsList.indexOf(nameComment)
+        // console.log('commentsList', commentsList);
+        // console.log('commentIndex', commentIndex);
+        //commentsList.splice(commentIndex, 1)
+        // getDashboard.dashboard.list[props.positionList].tasks[k].comments.splice(commentIndex, 1)
+        // let newDash = state.getDashboard
+        // console.log("getDashboard", newDash);
+        // localStorage.setItem(props.dashTitle, JSON.stringify(newDash))
+        let dashboard = getDashboard.dashboard
+        let list = getDashboard.dashboard.list
+        let tasks = getDashboard.dashboard.list.tasks
+        newObjComment = getDashboard
+        newObjComment.dashboard.list[props.positionList].tasks[k].comments = commentsList
+        console.log('newObjComment', newObjComment);
+
+        localStorage.setItem(props.dashTitle, JSON.stringify(newObjComment))
+        // console.log("newObjComment", newObjComment);
+        // localStorage.removeItem(props.dashTitle)
+
+        // localStorage.setItem(props.keyStore, JSON.stringify(newObjComment))
+        setState({
+            ...state,
+            saveComment: true
+        })
+
+    }
 
     const getAndAssignItems = () => {
         let listOfTasks = props.listOfTasks
         let getDashboard = JSON.parse(localStorage.getItem(props.dashTitle))
         let k = getDashboard.dashboard.list[props.positionList].tasks.map(x => x.taskTitle).indexOf(props.taskTitle)
         let listOfComments = getDashboard.dashboard.list[props.positionList].tasks[k].comments.map(x => x.comment)
-        //console.log('listOfComments', listOfComments);
+        let color = getDashboard.dashboard.list[props.positionList].tasks[k].label
+        let description = getDashboard.dashboard.list[props.positionList].tasks[k].description
+        console.log('description', description);
+        console.log('color', state.color);
 
         setState({
             ...state,
             listOfTasks,
             listOfComments,
             taskTitle: props.taskTitle,
-            saveComment: false
+            saveComment: false,
+            description,
+            inputTextarea: description,
+            color
         })
 
     }
 
-    const maptasks = (item, key) => {
+    const mapComment = (item, key) => {
         return (
 
             <ul key={key}>
                 <li>{item}</li>
                 <Button
                     label='X'
+                    onClickCallback={deleteComment(item)}
+
                 />
             </ul>
         )
@@ -162,7 +226,7 @@ const ModalNewTask = (props) => {
         //     taskTitle: props.taskTitle
         // })
 
-    }, [state.taskTitle])
+    }, [state.taskTitle, props.taskTitle, state.saveComment])
 
 
     return (
@@ -171,40 +235,83 @@ const ModalNewTask = (props) => {
             {
                 props?.listTitleDuck?.config.listTitle
             }
-            <div>
-                <h2>Seleziona colore etichetta</h2>
-                <InputBox
-                    type='color'
-                    placeholder={'inserisci codice'}
-                    onChangeCallback={handleInput('inputColor')}
-                />
-                <Button
-                    onClickCallback={saveColorLabel}
-                    label='SALVA'
-                />
-            </div>
-            <div>
-                <h4>Inserisci Descrizione</h4>
-                <textarea
-                    onChange={handleInput('inputTextarea')}></textarea>
-                <Button
-                    onClickCallback={saveDescription}
-                    label='SALVA'
-                />
-            </div>
+
+            {
+                !state.color &&
+
+                <div>
+                    <h2>Seleziona colore etichetta</h2>
+                    <InputBox
+                        type='color'
+                        placeholder={'inserisci codice'}
+                        onChangeCallback={handleInput('inputColor')}
+                        value={state.inputColor}
+                    />
+                    <Button
+                        onClickCallback={saveColorLabel}
+                        label='SALVA'
+                    />
+                </div>
+            }
+            {
+                state.color &&
+
+                <div>
+                    <h2> Colore etichetta</h2>
+                    <div style={{ backgroundColor: state.color, width: '30px', height: '30px' }}>
+
+                    </div>
+                    <Button
+                        onClickCallback={updateColor}
+                        label='Modifica'
+                    />
+                </div>
+            }
+
+
+            {
+                !state.description &&
+                <div>
+                    <h4>Inserisci Descrizione</h4>
+                    <textarea
+                        onChange={handleInput('inputTextarea')} value={state.inputTextarea}></textarea>
+                    <Button
+                        onClickCallback={saveDescription}
+                        label='SALVA'
+                    />
+                    {/* //PER IL MERGE */}
+                    <h4>{state.description}</h4>
+                </div>
+            }
+
+            {
+                state.description &&
+                <div>
+                    <h4>Descrizione</h4>
+                    <h4>{state.description}</h4>
+                    <Button
+                        onClickCallback={updateDescription}
+                        label='MODIFICA'
+                    />
+                    {/* //PER IL MERGE */}
+
+                </div>
+            }
+
             <div>
                 <h4>Inserisci Commento</h4>
                 <InputBox
                     type='text'
                     placeholder='inserisci titolo'
                     onChangeCallback={handleInput('inputInputbox')}
+                    value={state.inputInputbox}
                 />
                 <Button
                     onClickCallback={saveComments}
                     label='SALVA'
                 />
                 {
-                    state.listOfComments.map(maptasks)
+                    state.listOfComments.map(mapComment)
 
                 }
             </div>

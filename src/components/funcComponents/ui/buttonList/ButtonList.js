@@ -41,7 +41,7 @@ const ButtonList = (props) => {
     let positionList = state.getDashboard.dashboard.list.map(x => x.listTitle).indexOf(props.listTitle)
     let listOfTitleList = state.getDashboard.dashboard.list.map(x => x.listTitle)
 
-    const deteleList = (e) => {
+    const deleteList = (e) => {
         let isDeleted = true;
         let newObjDash = null;
         let objDash = JSON.parse(localStorage.getItem(props.keyStore))
@@ -343,13 +343,8 @@ const ButtonList = (props) => {
                         <Button
                             className="button-close"
                             label="X"
-                            onClickCallback={deteleList} />
+                            onClickCallback={deleteList} />
                         {props.label}
-                    </div>
-                    <div>
-                        {
-                            state.listOfTasks.map(maptasks)
-                        }
                     </div>
 
                     {
@@ -360,6 +355,12 @@ const ButtonList = (props) => {
                             label="+ add a new task"
                             onClickCallback={openCloseInputBox(true)} />
                     }
+                    <div>
+                        {
+                            state.listOfTasks.map(maptasks)
+                        }
+                    </div>
+
 
                     {
                         state.openInputBox &&
