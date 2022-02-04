@@ -8,9 +8,9 @@ import ModalNewTask from '../../components/funcComponents/ui/modalNewTask/ModalN
 
 //REDUX
 import { connect } from 'react-redux';
-import { setRefreshList } from '../../redux/ducks/refreshListDuck';
 
-const Dashboardhook = (props) => {
+
+const DashboardHook = (props) => {
 
 
     const params = useParams()
@@ -23,10 +23,10 @@ const Dashboardhook = (props) => {
             saveList: false,
             listTitle: null,
             listOfList: [],
-            refreshList: props?.refreshListDuck.token.refreshList,
+            refreshList: props?.refreshListDuck?.token,
         }
     )
-    console.log('refreshListDuck', props.refreshListDuck)
+    console.log('refreshListDuck', props?.refreshListDuck?.token)
 
 
 
@@ -98,13 +98,13 @@ const Dashboardhook = (props) => {
 
         let saveList = false
 
-
+        console.log('start props', props.refreshListDuck);
 
         setState({
             ...state,
             listOfList: listOfList,
             saveList,
-            refreshList: props?.refreshListDuck.token.refreshList
+            refreshList: props?.refreshListDuck?.token
         })
 
     }
@@ -145,13 +145,12 @@ const Dashboardhook = (props) => {
         // }
         // props.dispatch(setRefreshList(obj))
 
-
         // setState({
         //     ...state,
-        //     refreshList: false
+        //     refreshList: props?.refreshListDuck.token.refreshList
         // })
 
-    }, [state.saveList, props?.refreshListDuck.token.refreshList, state.refreshList])
+    }, [state.saveList, props?.refreshListDuck?.token])
 
     return (
         <div style={{ backgroundColor: location.state.color }} className='dashboard-container'>
@@ -168,7 +167,7 @@ const Dashboardhook = (props) => {
                         onClickCallback={openCloseInputBox(true)}
                     />
                 }
-                
+
                 {
                     state.listOfList.map(mapLeaderBoard)
                 }
@@ -218,4 +217,4 @@ const mapStateToProps = state => ({
     refreshListDuck: state.refreshListDuck
 });
 
-export default connect(mapStateToProps)(Dashboardhook);
+export default connect(mapStateToProps)(DashboardHook);

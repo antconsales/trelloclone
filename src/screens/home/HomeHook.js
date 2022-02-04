@@ -11,7 +11,7 @@ import ButtonDash from '../../components/funcComponents/ui/buttonDash/ButtonDash
 import { connect } from 'react-redux';
 
 
-const Homehook = (props) => {
+const HomeHook = (props) => {
 
     const navigate = useNavigate();
     const [state, setState] = useState(
@@ -182,4 +182,4 @@ const mapStateToProps = state => ({
     refreshListDuck: state.refreshListDuck
 });
 
-export default connect(mapStateToProps)(Homehook);
+export default connect(mapStateToProps)(HomeHook);

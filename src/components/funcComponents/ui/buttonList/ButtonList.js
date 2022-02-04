@@ -33,6 +33,7 @@ const ButtonList = (props) => {
             listOpened: false,
             newListOfTasks: null,
             getNewList: null,
+            nameRefreshList: null,
         }
     )
 
@@ -110,11 +111,40 @@ const ButtonList = (props) => {
         let listOfTasks = getDashboard.dashboard.list[positionList].tasks.map(x => x.taskTitle)
 
         let listOfTasks2 = getDashboard.dashboard.list.map(x => (x.tasks.map(y => y.taskTitle)))
-        //console.log('listOfTasks2', listOfTasks2);
+
         //console.log('listOfTasks', listOfTasks);
         let saveTask = false
 
         listOfTitleList = getDashboard.dashboard.list.map(x => x.listTitle)
+        console.log('ioSono la lista creata', props.listTitle);
+        console.log('ioSono la lista dei task di', props.listTitle, listOfTitleList);
+        setState({
+            ...state,
+            listOfTasks,
+            saveTask,
+            positionList: positionList,
+            moveTask: false,
+            listOfTitleList: listOfTitleList,
+            listOpened: false,
+            getDashboard
+        })
+
+    }
+
+    const getAndAssignItemsNew = (name) => {
+        console.log('name', name);
+        let getDashboard = JSON.parse(localStorage.getItem(location.state.title));
+        positionList = getDashboard.dashboard.list.map(x => x.listTitle).indexOf(name)
+        let listOfTasks = getDashboard.dashboard.list[positionList].tasks.map(x => x.taskTitle)
+        console.log('listOfTasks nuovii', listOfTasks);
+        // let listOfTasks2 = getDashboard.dashboard.list.map(x => (x.tasks.map(y => y.taskTitle)))
+
+        //console.log('listOfTasks', listOfTasks);
+        let saveTask = false
+
+        listOfTitleList = getDashboard.dashboard.list.map(x => x.listTitle)
+        console.log('ioSono la lista creata', name);
+        console.log('ioSono la lista dei task di', name, listOfTitleList);
         setState({
             ...state,
             listOfTasks,
@@ -217,7 +247,7 @@ const ButtonList = (props) => {
     }
 
     const refrheshlist = () => {
-
+        props.dispatch(setRefreshList(false))
         //props.dispatch(setRefreshList(false))
         setState({
             ...state,
@@ -248,7 +278,9 @@ const ButtonList = (props) => {
             moveTask: true,
             listOfTasks: listOfTasksTwo,
             getDashboard,
-            getNewList
+            getNewList,
+            nameRefreshList: name
+
 
         })
 
@@ -283,9 +315,18 @@ const ButtonList = (props) => {
 
     useEffect(() => {
         getAndAssignItems()
+        console.log('io sono props.LIST', props.listTitle);
+        console.log('io sono nameRefreshList', state.nameRefreshList);
+        console.log('REDUX', props?.refreshListDuck?.token);
+        // if (props.listTitle !== state.nameRefreshList) {
+        //     getAndAssignItems()
+        // }
+        // else if (state.nameRefreshList === props.listTitle) {
+        //     getAndAssignItems()
+        // }
 
 
-    }, [state.saveTask, state.moveTask, state.listOpened])
+    }, [state.saveTask, state.moveTask, state.listOpened, props?.refreshListDuck?.token])
 
     return (
 
@@ -307,12 +348,6 @@ const ButtonList = (props) => {
                     </div>
                     <div>
                         {
-                            (props?.refreshListDuck?.token.refreshList === false ||
-                                props?.refreshListDuck?.token.refreshList === undefined) &&
-                            state.listOfTasks.map(maptasks)
-                        }
-                        {
-                            props?.refreshListDuck?.token.refreshList === true &&
                             state.listOfTasks.map(maptasks)
                         }
                     </div>
@@ -360,7 +395,8 @@ ButtonList.propTypes = {
 }
 
 const mapStateToProps = state => ({
-    listTitleDuck: state.listTitleDuck
+    listTitleDuck: state.listTitleDuck,
+    refreshListDuck: state.refreshListDuck
 });
 
 export default connect(mapStateToProps)(ButtonList);
