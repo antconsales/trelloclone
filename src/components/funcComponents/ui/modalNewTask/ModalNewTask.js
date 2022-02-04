@@ -150,16 +150,7 @@ const ModalNewTask = (props) => {
         // console.log("objComment", objComment);
 
         let k = getDashboard.dashboard.list[props.positionList].tasks.map(x => x.taskTitle).indexOf(props.taskTitle)
-        // let comments = getDashboard.dashboard.list[props.positionList].tasks[k].comments
         let commentsList = getDashboard.dashboard.list[props.positionList].tasks[k].comments.filter((item) => item.comment !== nameComment)
-        // let commentIndex = commentsList.indexOf(nameComment)
-        // console.log('commentsList', commentsList);
-        // console.log('commentIndex', commentIndex);
-        //commentsList.splice(commentIndex, 1)
-        // getDashboard.dashboard.list[props.positionList].tasks[k].comments.splice(commentIndex, 1)
-        // let newDash = state.getDashboard
-        // console.log("getDashboard", newDash);
-        // localStorage.setItem(props.dashTitle, JSON.stringify(newDash))
         let dashboard = getDashboard.dashboard
         let list = getDashboard.dashboard.list
         let tasks = getDashboard.dashboard.list.tasks
@@ -168,10 +159,6 @@ const ModalNewTask = (props) => {
         console.log('newObjComment', newObjComment);
 
         localStorage.setItem(props.dashTitle, JSON.stringify(newObjComment))
-        // console.log("newObjComment", newObjComment);
-        // localStorage.removeItem(props.dashTitle)
-
-        // localStorage.setItem(props.keyStore, JSON.stringify(newObjComment))
         setState({
             ...state,
             saveComment: true

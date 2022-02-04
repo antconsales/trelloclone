@@ -215,6 +215,25 @@ const ButtonList = (props) => {
         })
     }
 
+    const deleteTask = (nameTask) => () => {
+        let newObjTasks = null;
+        let getDashboard = JSON.parse(localStorage.getItem(location.state.title))
+        positionList = getDashboard.dashboard.list.map(x => x.listTitle).indexOf(props.listTitle)
+        let listOfTasks = getDashboard.dashboard.list[positionList].tasks.map(x => x.taskTitle)
+        let tasksList = getDashboard.dashboard.list[positionList].tasks.filter((item) => item.taskTitle !== nameTask)
+        // let dashboard = getDashboard.dashboard
+        newObjTasks = getDashboard
+        newObjTasks.dashboard.list[positionList].tasks = tasksList
+        console.log('newObjTasks', newObjTasks);
+
+        localStorage.setItem(location.state.title, JSON.stringify(newObjTasks))
+        setState({
+            ...state,
+            saveTask: true
+        })
+
+    }
+
     const maptasks = (item, key) => {
         return (
             <div key={key} className='button-list-task'>
@@ -242,6 +261,14 @@ const ButtonList = (props) => {
                         state.listOfTitleList.map(mapList(item))
                     }
                 </select>
+
+                <Button
+                    className="delete"
+                    backgroundColor={'lightgrey'}
+                    label='X'
+                    onClickCallback={deleteTask(item)}
+                // keyStore={location.state.title}
+                />
             </div>
         )
     }
